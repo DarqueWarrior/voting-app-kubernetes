@@ -1,0 +1,143 @@
+{
+   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+   "contentVersion": "1.0.0.0",
+   "parameters": {      
+      "tenant": {
+         "type": "string"
+      },
+      "objectId": {
+         "type": "string"
+      }
+   },
+   "variables": {
+      "votekvName": "[concat('votekv', uniqueString(resourceGroup().id))]",
+      "registryName": "[concat('voteacr', uniqueString(resourceGroup().id))]",
+      "storageAccountName": "[concat('votestor', uniqueString(resourceGroup().id))]",
+      "accessPolicies": [
+         {
+            "objectId": "[parameters('objectId')]",
+            "tenantId": "[parameters('tenant')]",
+            "permissions": {
+               "keys": [
+                  "Get",
+                  "List",
+                  "Update",
+                  "Create",
+                  "Import",
+                  "Delete",
+                  "Recover",
+                  "Backup",
+                  "Restore"
+               ],
+               "secrets": [
+                  "Get",
+                  "List",
+                  "Set",
+                  "Delete",
+                  "Recover",
+                  "Backup",
+                  "Restore"
+               ],
+               "certificates": [
+                  "Get",
+                  "List",
+                  "Update",
+                  "Create",
+                  "Import",
+                  "Delete",
+                  "Recover",
+                  "Backup",
+                  "Restore",
+                  "ManageContacts",
+                  "ManageIssuers",
+                  "GetIssuers",
+                  "ListIssuers",
+                  "SetIssuers",
+                  "DeleteIssuers"
+               ]
+            }
+         }
+      ]
+   },
+   "resources": [
+      {
+         "name": "[variables('registryName')]",
+         "type": "Microsoft.ContainerRegistry/registries",
+         "location": "[resourceGroup().location]",
+         "apiVersion": "2019-05-01",
+         "sku": {
+            "name": "Premium"
+         },
+         "tags": {
+
+         },
+         "properties": {
+            "adminUserEnabled": true
+         }
+      },
+      {
+         "apiVersion": "2018-02-14",
+         "name": "[variables('votekvName')]",
+         "location": "[resourceGroup().location]",
+         "type": "Microsoft.KeyVault/vaults",
+         "properties": {
+            "enabledForDeployment": true,
+            "enabledForTemplateDeployment": true,
+            "enabledForDiskEncryption": false,
+            "enableRbacAuthorization": false,
+            "accessPolicies": "[variables('accessPolicies')]",
+            "tenantId": "[parameters('tenant')]",
+            "sku": {
+               "name": "Standard",
+               "family": "A"
+            },
+            "enableSoftDelete": true,
+            "softDeleteRetentionInDays": 90,
+            "networkAcls": {
+               "defaultAction": "allow",
+               "bypass": "AzureServices",
+               "ipRules": [
+               ],
+               "virtualNetworkRules": [
+               ]
+            }
+         },
+         "tags": {
+         },
+         "dependsOn": [
+         ]
+      },
+      {
+         "name": "[variables('storageAccountName')]",
+         "type": "Microsoft.Storage/storageAccounts",
+         "apiVersion": "2019-06-01",
+         "location": "[resourceGroup().location]",
+         "properties": {
+            "accessTier": "Hot",
+            "supportsHttpsTrafficOnly": true
+         },
+         "dependsOn": [
+         ],
+         "sku": {
+            "name": "Standard_RAGRS"
+         },
+         "kind": "StorageV2",
+         "tags": {
+         }
+      }
+   ],
+   "outputs": {
+      "acrloginServer": {
+         "type": "string",
+         "value": "[reference(concat('Microsoft.ContainerRegistry/registries/', variables('registryName'))).loginServer]"
+      },
+      "sharedStorageName": {
+         "type": "string",
+         "value": "[variables('storageAccountName')]"
+      },
+      "sharedStorageKey": {
+         "type": "string",
+         "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+      }
+   }
+}
