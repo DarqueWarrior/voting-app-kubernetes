@@ -774,9 +774,6 @@
                         "url": "[concat(parameters('_artifactsLocation'), '/', variables('iisSetupArchiveFolder'), '/', variables('iisSetupArchiveFileName'))]",
                         "script": "iis_setup.ps1",
                         "function": "iis_setup"
-                     },
-                     "configurationArguments": {
-                        "nodeName": "[concat(variables('vmNamePrefix'), copyindex())]"
                      }
                   },
                   "protectedSettings": {
