@@ -126,6 +126,18 @@
          "metadata": {
             "description": "The Windows version for the VM"
          }
+      },
+      "_artifactsLocation": {
+         "type": "string",
+         "metadata": {
+            "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+         }
+      },
+      "_artifactsLocationSasToken": {
+         "type": "securestring",
+         "metadata": {
+            "description": "Auto-generated token to access _artifactsLocation"
+         }
       }
    },
    "variables": {
@@ -134,6 +146,8 @@
       "vmNamePrefix": "voteWindowsVM",
       "virtualNetworkName": "voteVNet",
       "availabilitySetName": "voteAvSet",
+      "iisSetupArchiveFolder": "envsetupscripts",
+      "iisSetupArchiveFileName": "iis_setup.zip",
       "imagePublisher": "MicrosoftWindowsServer",
       "virtualNetworkSubnetName": "voteBackendSubnet",
       "networkInterfaceNamePrefix": "voteBackendVMNic",
@@ -338,7 +352,7 @@
          "properties": {
             "frontendIPConfigurations": [
                {
-                  "properties": {                     
+                  "properties": {
                      "publicIPAddress": {
                         "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressName'))]"
                      }
@@ -735,6 +749,38 @@
                   "protectedSettings": {
                      "storageAccountName": "[variables('storageAccountName')]",
                      "storageAccountKey": "[listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
+                  }
+               }
+            },
+            {
+               "name": "Microsoft.Powershell.DSC",
+               "type": "extensions",
+               "location": "[resourceGroup().location]",
+               "apiVersion": "2016-03-30",
+               "dependsOn": [
+                  "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmNamePrefix'), copyindex()))]"
+               ],
+               "tags": {
+                  "displayName": "iisSetup"
+               },
+               "properties": {
+                  "publisher": "Microsoft.Powershell",
+                  "type": "DSC",
+                  "typeHandlerVersion": "2.9",
+                  "autoUpgradeMinorVersion": true,
+                  "forceUpdateTag": "1",
+                  "settings": {
+                     "configuration": {
+                        "url": "[concat(parameters('_artifactsLocation'), '/', variables('iisSetupArchiveFolder'), '/', variables('iisSetupArchiveFileName'))]",
+                        "script": "iis_setup.ps1",
+                        "function": "iis_setup"
+                     },
+                     "configurationArguments": {
+                        "nodeName": "[concat(variables('vmNamePrefix'), copyindex())]"
+                     }
+                  },
+                  "protectedSettings": {
+                     "configurationUrlSasToken": "[parameters('_artifactsLocationSasToken')]"
                   }
                }
             }
