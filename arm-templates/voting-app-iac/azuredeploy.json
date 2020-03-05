@@ -164,16 +164,29 @@
          "type": "Microsoft.Sql/servers",
          "location": "[resourceGroup().location]",
          "apiVersion": "2014-04-01",
-         "dependsOn": [
-         ],
-         "tags": {
-            "displayName": "votesql"
-         },
          "properties": {
             "administratorLogin": "[parameters('adminUsername')]",
             "administratorLoginPassword": "[parameters('adminPassword')]"
          },
          "resources": [
+            {
+               "name": "[parameters('votedbName')]",
+               "type": "databases",
+               "location": "[resourceGroup().location]",
+               "apiVersion": "2014-04-01",
+               "dependsOn": [
+                  "[resourceId('Microsoft.Sql/servers', variables('votesqlName'))]"
+               ],
+               "tags": {
+                  "displayName": "Database"
+               },
+               "properties": {
+                  "collation": "SQL_Latin1_General_CP1_CI_AS",
+                  "edition": "[parameters('votedbEdition')]",
+                  "maxSizeBytes": "1073741824",
+                  "requestedServiceObjectiveName": "[parameters('votedbRequestedServiceObjectiveName')]"
+               }
+            },
             {
                "name": "AllowAllWindowsAzureIps",
                "type": "firewallrules",
@@ -185,26 +198,16 @@
                "properties": {
                   "startIpAddress": "0.0.0.0",
                   "endIpAddress": "0.0.0.0"
-               }
-            },
-            {
-               "name": "[parameters('votedbName')]",
-               "type": "databases",
-               "location": "[resourceGroup().location]",
-               "apiVersion": "2014-04-01",
-               "dependsOn": [
-                  "[resourceId('Microsoft.Sql/servers', variables('votesqlName'))]"
-               ],
-               "tags": {
-                  "displayName": "votedb"
                },
-               "properties": {
-                  "collation": "SQL_Latin1_General_CP1_CI_AS",
-                  "edition": "[parameters('votedbEdition')]",
-                  "maxSizeBytes": "1073741824",
-                  "requestedServiceObjectiveName": "[parameters('votedbRequestedServiceObjectiveName')]"
+               "tags": {
+                  "displayname": "Firewall Rules"
                }
             }
+         ],
+         "tags": {
+            "displayName": "Sql Server"
+         },
+         "dependsOn": [
          ]
       },
       {
@@ -223,6 +226,7 @@
          },
          "kind": "StorageV2",
          "tags": {
+            "displayname": "Storage Account"
          }
       },
       {
@@ -262,6 +266,7 @@
             }
          },
          "tags": {
+            "displayname": "AKS"
          }
       },
       {
@@ -270,7 +275,7 @@
          "name": "[variables('availabilitySetName')]",
          "location": "[resourceGroup().location]",
          "tags": {
-            "displayName": "AvailabilitySet"
+            "displayName": "Availability Set"
          },
          "properties": {
          }
@@ -281,7 +286,7 @@
          "name": "[variables('virtualNetworkName')]",
          "location": "[resourceGroup().location]",
          "tags": {
-            "displayName": "VirtualNetwork"
+            "displayName": "Virtual Network"
          },
          "properties": {
             "addressSpace": {
@@ -305,7 +310,7 @@
          "name": "[concat(variables('networkInterfaceNamePrefix'), copyindex())]",
          "location": "[resourceGroup().location]",
          "tags": {
-            "displayName": "NetworkInterface"
+            "displayName": "Network Interface"
          },
          "copy": {
             "name": "nicLoop",
@@ -343,7 +348,7 @@
             "name": "Basic"
          },
          "tags": {
-            "displayName": "LoadBalancer"
+            "displayName": "Load Balancer"
          },
          "dependsOn": [
             "[variables('vnetId')]",
@@ -408,11 +413,11 @@
          },
          "location": "[resourceGroup().location]",
          "tags": {
-            "displayName": "VirtualMachines"
+            "displayName": "Virtual Machines"
          },
          "dependsOn": [
-            "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
             "nicLoop",
+            "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
             "[resourceId('Microsoft.Compute/availabilitySets/', variables('availabilitySetName'))]"
          ],
          "properties": {
@@ -464,7 +469,7 @@
                "apiVersion": "2016-03-30",
                "location": "[resourceGroup().location]",
                "tags": {
-                  "displayName": "AzureDiagnostics"
+                  "displayName": "Azure Diagnostics"
                },
                "dependsOn": [
                   "[resourceId('Microsoft.Compute/virtualMachines/', concat(variables('vmNamePrefix'), copyindex()))]"
@@ -475,6 +480,7 @@
                   "typeHandlerVersion": "1.5",
                   "autoUpgradeMinorVersion": true,
                   "settings": {
+                     "xmlCfg": "",
                      "storageAccount": "[variables('storageAccountName')]",
                      "WadCfg": {
                         "DiagnosticMonitorConfiguration": {
@@ -747,6 +753,7 @@
                      }
                   },
                   "protectedSettings": {
+                     "storageAccountEndPoint": "",
                      "storageAccountName": "[variables('storageAccountName')]",
                      "storageAccountKey": "[listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
                   }
@@ -761,7 +768,7 @@
                   "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmNamePrefix'), copyindex()))]"
                ],
                "tags": {
-                  "displayName": "iisSetup"
+                  "displayName": "DSC IIS Setup"
                },
                "properties": {
                   "publisher": "Microsoft.Powershell",
@@ -770,6 +777,8 @@
                   "autoUpgradeMinorVersion": true,
                   "forceUpdateTag": "1",
                   "settings": {
+                     "modulesUrl": "",
+                     "configurationFunction": "",
                      "configuration": {
                         "url": "[concat(parameters('_artifactsLocation'), '/', variables('iisSetupArchiveFolder'), '/', variables('iisSetupArchiveFileName'))]",
                         "script": "iis_setup.ps1",
@@ -792,6 +801,7 @@
             "name": "Basic"
          },
          "tags": {
+            "displayname": "Public IP"
          },
          "properties": {
             "publicIPAllocationMethod": "Dynamic",

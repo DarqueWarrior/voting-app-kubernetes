@@ -1,7 +1,7 @@
 {
    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
    "contentVersion": "1.0.0.0",
-   "parameters": {      
+   "parameters": {
       "tenant": {
          "type": "string"
       },
@@ -69,14 +69,14 @@
             "name": "Premium"
          },
          "tags": {
-
+            "displayname": "Continer Registry"
          },
          "properties": {
             "adminUserEnabled": true
          }
       },
       {
-         "apiVersion": "2018-02-14",
+         "apiVersion": "2016-10-01",
          "name": "[variables('votekvName')]",
          "location": "[resourceGroup().location]",
          "type": "Microsoft.KeyVault/vaults",
@@ -103,6 +103,7 @@
             }
          },
          "tags": {
+            "displayname": "Key Vault"
          },
          "dependsOn": [
          ]
@@ -123,6 +124,7 @@
          },
          "kind": "StorageV2",
          "tags": {
+            "displayname": "Storage Account"
          }
       }
    ],
