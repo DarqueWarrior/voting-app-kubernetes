@@ -1,9 +1,0 @@
-deploymentname: result-deployment
-replicas: 2
-port: 80
-image:
-  name: gevergheresultappkubernetes
-  repository: "forresterdemo.azurecr.io/gevergheresultappkubernetes"
-  tag: latest
-azurestorageaccountsecret: azure-storage
-servicename: result-service
