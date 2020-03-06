@@ -200,12 +200,12 @@
                   "endIpAddress": "0.0.0.0"
                },
                "tags": {
-                  "displayname": "Firewall Rules"
+                  "displayname": "FirewallRules"
                }
             }
          ],
          "tags": {
-            "displayName": "Sql Server"
+            "displayName": "SqlServer"
          },
          "dependsOn": [
          ]
@@ -226,7 +226,7 @@
          },
          "kind": "StorageV2",
          "tags": {
-            "displayname": "Storage Account"
+            "displayname": "StorageAccount"
          }
       },
       {
@@ -275,7 +275,7 @@
          "name": "[variables('availabilitySetName')]",
          "location": "[resourceGroup().location]",
          "tags": {
-            "displayName": "Availability Set"
+            "displayName": "AvailabilitySet"
          },
          "properties": {
          }
@@ -286,7 +286,7 @@
          "name": "[variables('virtualNetworkName')]",
          "location": "[resourceGroup().location]",
          "tags": {
-            "displayName": "Virtual Network"
+            "displayName": "VirtualNetwork"
          },
          "properties": {
             "addressSpace": {
@@ -310,7 +310,7 @@
          "name": "[concat(variables('networkInterfaceNamePrefix'), copyindex())]",
          "location": "[resourceGroup().location]",
          "tags": {
-            "displayName": "Network Interface"
+            "displayName": "NetworkInterface"
          },
          "copy": {
             "name": "nicLoop",
@@ -348,7 +348,7 @@
             "name": "Basic"
          },
          "tags": {
-            "displayName": "Load Balancer"
+            "displayName": "LoadBalancer"
          },
          "dependsOn": [
             "[variables('vnetId')]",
@@ -413,7 +413,7 @@
          },
          "location": "[resourceGroup().location]",
          "tags": {
-            "displayName": "Virtual Machines"
+            "displayName": "VirtualMachines"
          },
          "dependsOn": [
             "nicLoop",
@@ -469,7 +469,7 @@
                "apiVersion": "2016-03-30",
                "location": "[resourceGroup().location]",
                "tags": {
-                  "displayName": "Azure Diagnostics"
+                  "displayName": "AzureDiagnostics"
                },
                "dependsOn": [
                   "[resourceId('Microsoft.Compute/virtualMachines/', concat(variables('vmNamePrefix'), copyindex()))]"
@@ -768,7 +768,7 @@
                   "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmNamePrefix'), copyindex()))]"
                ],
                "tags": {
-                  "displayName": "DSC IIS Setup"
+                  "displayName": "DSCIISSetup"
                },
                "properties": {
                   "publisher": "Microsoft.Powershell",
@@ -801,7 +801,7 @@
             "name": "Basic"
          },
          "tags": {
-            "displayname": "Public IP"
+            "displayname": "PublicIP"
          },
          "properties": {
             "publicIPAllocationMethod": "Dynamic",
