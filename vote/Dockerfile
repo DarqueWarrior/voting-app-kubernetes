@@ -1,5 +1,6 @@
 # Using official python runtime base image
-FROM forresterdemo.azurecr.io/votingappbaseimage:stable
+FROM python:2.7.17-alpine
+
 # Set the application directory
 WORKDIR /app
 
@@ -14,6 +15,7 @@ ADD . /app
 EXPOSE 80
 
 # Environment variables
+ENV python_version 2.7.17
 ENV OPTION_A Cats
 ENV OPTION_B Dogs
 ENV AZURE_STORAGE_ACCOUNT account
