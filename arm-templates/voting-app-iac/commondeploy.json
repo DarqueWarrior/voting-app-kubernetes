@@ -133,6 +133,10 @@
          "type": "string",
          "value": "[reference(concat('Microsoft.ContainerRegistry/registries/', variables('registryName'))).loginServer]"
       },
+      "acrName": {
+         "type": "string",
+         "value": "[variables('registryName')]"
+      },
       "sharedStorageName": {
          "type": "string",
          "value": "[variables('storageAccountName')]"
@@ -140,6 +144,13 @@
       "sharedStorageKey": {
          "type": "string",
          "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+      },
+      "resourceGroupName": {
+         "type": "string",
+         "value": "[resourceGroup().name]",
+         "metadata": {
+            "description": "Name of the resource group used in this deployment."
+         }
       }
    }
 }

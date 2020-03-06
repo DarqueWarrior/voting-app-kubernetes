@@ -827,6 +827,13 @@
       "controlPlaneFQDN": {
          "type": "string",
          "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', variables('aksName'))).fqdn]"
+      },
+      "resourceGroupName": {
+         "type": "string",
+         "value": "[resourceGroup().name]",
+         "metadata": {
+            "description": "Name of the resource group used in this deployment."
+         }
       }
    }
 }
