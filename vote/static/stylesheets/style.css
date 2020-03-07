@@ -28,7 +28,15 @@ button i{
 }
 
 button.a{
-  background-color: #FF6347;
+  background-color: #green;
+}
+
+#choice button.a:hover{
+  background-color: #black;
+}
+
+#choice button.a:focus{
+  background-color: #black;
 }
 
 button.b{
@@ -98,16 +106,8 @@ button.b{
   padding-left: 50px;
 }
 
-#choice button.a:hover{
-  background-color: #8B0000;
-}
-
 #choice button.b:hover{
   background-color: #00a2a1;
-}
-
-#choice button.a:focus{
-  background-color: #8B0000;
 }
 
 #choice button.b:focus{
