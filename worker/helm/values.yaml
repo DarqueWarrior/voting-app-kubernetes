@@ -2,8 +2,8 @@ deploymentname: worker-deployment
 replicas: 1
 port: 80
 image:
-  name: gevergheworkerappkubernetes
-  repository: "forresterdemo.azurecr.io/gevergheworkerappkubernetes"
-  tag: latest
+  name: worker
+  repository: "voteacr5t6c3w2poiy72.azurecr.io/vote"
+  tag: 601
 azurestorageaccountsecret: azure-storage
 azuresqlsecret: azure-sql

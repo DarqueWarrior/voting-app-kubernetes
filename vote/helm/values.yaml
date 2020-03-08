@@ -1,9 +1,9 @@
 deploymentname: vote-deployment
-replicas: 5
+replicas: 1
 port: 80
 image:
-  name: geverghevotingappkubernetes
-  repository: "forresterdemo.azurecr.io/geverghevotingappkubernetes"
-  tag: latest
+  name: vote
+  repository: "voteacr5t6c3w2poiy72.azurecr.io/vote"
+  tag: 601
 azurestorageaccountsecret: azure-storage
 servicename: vote-service
